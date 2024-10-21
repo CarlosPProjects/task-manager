@@ -1,18 +1,22 @@
 "use server";
 
+// import { IUser } from "@/types/global";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 export const addUser = async (formData: FormData) => {
-  
-  const data = Object.fromEntries(formData);
+  const { email, name, password } = Object.fromEntries(formData);
 
-  // const user = await prisma.users.create({
-  //   data: {
-  //     email: email as string,
-  //     name: name as string,
-  //     password: password as string
-  //   }
-  // })
+  try {
+    await prisma.users.create({
+      data: {
+        email: email as string,
+        name: name as string,
+        password: password as string,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };

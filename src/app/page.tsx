@@ -1,11 +1,11 @@
 import { PrismaClient } from "@prisma/client";
 import { addUser } from "./actions/addUser";
+import { IUser } from "@/types/global";
 
 const prisma = new PrismaClient();
 
 const Home = async () => {
-
-  const users = await prisma.users.findMany();
+  const users: IUser[] = await prisma.users.findMany();
 
   return (
     <div>
@@ -17,13 +17,11 @@ const Home = async () => {
         <button type="submit">Add</button>
       </form>
       <ul>
-        {
-          users.map(user => (
-            <li key={user.id}>
-              {user.name} - {user.email}
-            </li>
-          ))
-        }
+        {users.map((user) => (
+          <li key={user.id}>
+            {user.name} - {user.email}
+          </li>
+        ))}
       </ul>
     </div>
   );
