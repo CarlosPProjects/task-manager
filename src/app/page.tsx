@@ -10,7 +10,7 @@ const Home = async () => {
   return (
     <div>
       <h1>Todos</h1>
-      <form action={addUser}>
+      <form action={addUser} className="flex flex-col gap-4">
         <input type="text" name="name" placeholder="Add new user" />
         <input type="email" name="email" placeholder="Add new email" />
         <input type="password" name="password" placeholder="Add new password" />
