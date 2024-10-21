@@ -7,7 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model TodoItems {
+model Todos {
   id Int  @id @default(autoincrement())
   created_at  DateTime @default(now())
   title String
@@ -17,8 +17,8 @@ model TodoItems {
   updated_at DateTime  @updatedAt
   category Categories @relation(fields: [categoryId], references: [id])
   categoryId Int
-  user Profiles @relation(fields: [profileId], references: [id])
-  profileId String
+  user Users @relation(fields: [userId], references: [id])
+  userId String
 }
 
 model Categories{
@@ -26,12 +26,13 @@ model Categories{
   created_at   DateTime @default(now())
   name String @default("Uncategorized")
   color String?
-  todoItems TodoItems[]
+  todoItems Todos[]
 }
 
-model Profiles{
+model Users{
   id String @id @default(uuid())
   email String @unique
   name String?
-  todoItems TodoItems[]
+  password  String
+  todoItems Todos[]
 }
