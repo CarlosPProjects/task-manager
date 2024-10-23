@@ -15,3 +15,15 @@ export const createTask = async (name: string) => {
     },
   });
 };
+
+export const getUserTasks = async () => {
+  const user = await currentUser();
+
+  const tasks = await prisma.tasks.findMany({
+    where: {
+      user_id: user?.id,
+    }
+  })
+
+  return tasks
+}
