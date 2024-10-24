@@ -1,9 +1,9 @@
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
-import { getUserTasks } from "./actions/task";
+import { getTasks } from "./actions/task";
 import CreateTaskForm from "@/components/CreateTaskForm";
 
 export default async function Home() {
-  const { tasks } = await getUserTasks();
+  const { error, task } = await getTasks();
 
   return (
     <div>
@@ -16,12 +16,10 @@ export default async function Home() {
 
       <h1>Tasks</h1>
       <div>
-        {tasks?.map((task) => (
+        {!error && task?.map((task) => (
           <div key={task.id}>{task.name}</div>
         ))}
       </div>
-      <h2>Categories</h2>
-
       <CreateTaskForm />
     </div>
   );

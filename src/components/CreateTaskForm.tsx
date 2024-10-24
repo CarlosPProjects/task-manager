@@ -11,11 +11,19 @@ const CreateTaskForm = () => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
 
-    const { category, task } = Object.fromEntries(formData);
+    const data = Object.fromEntries(formData);
 
-    if (!category || !task) return;
+    if (!data.category || !data.task) return;
 
-    await createTask(task.toString(), parseInt(category as string));
+    const {task, error} = await createTask(data.task.toString());
+
+    if(error){
+      console.log(error);
+      throw new Error(error);
+    }
+
+    console.log(task);
+
   };
 
   useEffect(() => {
