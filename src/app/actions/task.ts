@@ -27,3 +27,7 @@ export const createTask = async (name: string): Promise<IErrorAction> => {
     return { success: false, error: "Error al crear la tarea" };
   }
 };
+
+export const getTask = async() => {
+  
+}
