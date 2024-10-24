@@ -2,20 +2,43 @@
 
 import { currentUser } from "@clerk/nextjs/server";
 import { PrismaClient } from "@prisma/client";
-import { IErrorAction } from "../utils/types";
 
 const prisma = new PrismaClient();
 
 export const createTask = async (name: string) => {
   const user = await currentUser();
-  if (!user) {
-    throw new Error("Usuario no autenticado");
-  }
+  if (!user) throw new Error("Usuario no autenticado");
 
-  await prisma.tasks.create({
-    data: {
-      name,
-      user_id: user?.id,
-    },
-  });
+  try {
+    const task = await prisma.tasks.create({
+      data: {
+        name,
+        user_id: user?.id,
+      },
+    });
+
+    return { success: true, task };
+  } catch (error) {
+    console.log("Error creating task:", error);
+    return { success: false, error: " Error creating task." };
+  }
+};
+
+export const getTasks = async () => {
+  const user = await currentUser();
+
+  if (!user) throw new Error("Usuario no autenticado");
+
+  try {
+    const task = await prisma.tasks.findMany({
+      where: {
+        user_id: user.id,
+      }
+    })
+
+    return { success: true, task };
+  } catch (error) {
+    console.log(error);
+    return { success: false, error: "Error getting task." };
+  }
 };
