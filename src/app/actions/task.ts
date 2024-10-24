@@ -2,14 +2,15 @@
 
 import { currentUser } from "@clerk/nextjs/server";
 import { PrismaClient } from "@prisma/client";
+import { IErrorAction } from "../utils/types";
 
 const prisma = new PrismaClient();
 
-export const createTask = async (name: string) => {
+export const createTask = async (name: string): Promise<IErrorAction> => {
   const user = await currentUser();
 
   if (!user) {
-    throw new Error('Usuario no autenticado');
+    throw new Error("Usuario no autenticado");
   }
 
   try {
@@ -20,10 +21,9 @@ export const createTask = async (name: string) => {
       },
     });
 
-    return {success: true, task}
-
+    return { success: true, task };
   } catch (error) {
-    console.error('Error al crear la tarea:', error);
-    return { success: false, error: 'Error al crear la tarea' };
+    console.error("Error al crear la tarea:", error);
+    return { success: false, error: "Error al crear la tarea" };
   }
 };
