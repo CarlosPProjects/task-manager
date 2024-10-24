@@ -16,9 +16,7 @@ export default async function Home() {
 
       <h1>Tasks</h1>
       <div>
-        {!error && task?.map((task) => (
-          <div key={task.id}>{task.name}</div>
-        ))}
+        {!error && task?.map((task) => <div key={task.id}>{task.name}</div>)}
       </div>
       <CreateTaskForm />
     </div>
