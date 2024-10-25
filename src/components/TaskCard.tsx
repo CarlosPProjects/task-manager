@@ -32,7 +32,7 @@ interface Props {
 
 const TaskCard: FC<Props> = ({ task }) => {
   const [loading, setLoading] = useState(false);
-  const [totalTime, setTotalTime] = useState(0);
+  const [totalTime, setTotalTime] = useState(task.totaltime);
   const [isActive, setIsActive] = useState(false);
 
   useEffect(() => {
@@ -88,7 +88,7 @@ const TaskCard: FC<Props> = ({ task }) => {
 
   const handleStopStask = async (id: number) => {
     setLoading(true);
-
+    setIsActive(false);
     const { error } = await updateTaskTotaltime(id, totalTime);
 
     if (error) {
