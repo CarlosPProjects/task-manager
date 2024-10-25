@@ -120,8 +120,6 @@ export const updateTaskTotaltime = async (id: number, totalTime: number) => {
       },
     });
 
-    revalidatePath("/");
-
     return { success: true };
   } catch (error) {
     console.log(error);

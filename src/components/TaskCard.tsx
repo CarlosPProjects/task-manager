@@ -26,16 +26,19 @@ interface Props {
 const TaskCard: FC<Props> = ({ task }) => {
   const [loading, setLoading] = useState(false);
   const [totalTime, setTotalTime] = useState(task.totaltime);
+  const [isActive, setIsActive] = useState(task.isactive);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
-    if (task.isactive) {
-      interval = setInterval(() => {
+
+    if (isActive) {
+      setInterval(() => {
         setTotalTime((prev) => prev + 1);
       }, 1000);
     }
+
     return () => clearInterval(interval);
-  }, [task.isactive]);
+  }, [isActive]);
 
   const handleDeleteTask = async (id: number) => {
     setLoading(true);
@@ -61,20 +64,6 @@ const TaskCard: FC<Props> = ({ task }) => {
 
   const handleToggleStatus = async (id: number, isActive: boolean) => {
     setLoading(true);
-
-    if (!isActive) {
-      const { error } = await updateTaskTotaltime(task.id, totalTime);
-      if (error) {
-        console.log(error);
-        toast({
-          title: "Error",
-          variant: "destructive",
-          description: "Error updating total time.",
-        });
-        setLoading(false);
-        return;
-      }
-    }
 
     const { error } = await updateTaskStatus(id, isActive);
 
@@ -128,13 +117,13 @@ const TaskCard: FC<Props> = ({ task }) => {
             {formatTime(totalTime)}
           </span>
           <Button
-            onClick={() => handleToggleStatus(task.id, task.isactive)}
-            variant={task.isactive ? "destructive" : "default"}
+            onClick={() => handleToggleStatus(task.id, isActive)}
+            variant={isActive ? "destructive" : "default"}
             size="icon"
             disabled={loading}
             className="transition-all duration-300"
           >
-            {task.isactive ? (
+            {isActive ? (
               <Pause className="w-4 h-4" />
             ) : (
               <Play className="w-4 h-4" />
