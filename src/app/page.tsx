@@ -1,13 +1,11 @@
-import { getTasks } from "./actions/task";
 import CreateTaskForm from "@/components/CreateTaskForm";
+import TasksList from "@/components/TasksList";
 
 export default async function Home() {
-  const { error, task } = await getTasks();
-
   return (
     <div>
       <h1>Tasks</h1>
-      <CreateTaskForm />
+      <TasksList />
     </div>
   );
 }
