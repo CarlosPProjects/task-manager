@@ -40,6 +40,9 @@ export const getTasks = async () => {
       where: {
         user_id: user.id,
       },
+      orderBy: {
+        created_at: "desc",
+      },
     });
 
     revalidatePath("/");
@@ -92,8 +95,6 @@ export const updateTaskStatus = async (id: number, isActive: boolean) => {
         isactive: !isActive,
       },
     });
-
-    revalidatePath("/");
 
     return { success: true };
   } catch (error) {

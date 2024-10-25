@@ -4,19 +4,20 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
-  schemas  = ["auth", "public"]
+  schemas   = ["auth", "public"]
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model tasks {
-  id        Int     @id @default(autoincrement())
-  name      String
-  totaltime Int     @default(0)
-  isactive  Boolean @default(false)
-  user_id   String  @default(dbgenerated("requesting_user_id()"))
+  id         Int      @id @default(autoincrement())
+  name       String
+  totaltime  Int      @default(0)
+  isactive   Boolean  @default(false)
+  user_id    String   @default(dbgenerated("requesting_user_id()"))
+  created_at DateTime @default(now()) @db.Timestamp(6)
 
   @@schema("public")
 }

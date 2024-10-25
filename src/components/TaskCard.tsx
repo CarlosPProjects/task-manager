@@ -141,24 +141,22 @@ const TaskCard: FC<Props> = ({ task }) => {
             {formatTime(totalTime)}
           </span>
           <div className="flex gap-2 items-center">
-            <Button
-              onClick={() => handleToggleStatus(task.id)}
-              variant={isActive ? "destructive" : "default"}
-              size="icon"
-              disabled={loading}
-              className="transition-all duration-300"
-            >
-              {isActive ? (
-                <Pause className="w-4 h-4" />
-              ) : (
+            {!isActive && (
+              <Button
+                onClick={() => handleToggleStatus(task.id)}
+                variant={"default"}
+                size="icon"
+                disabled={loading}
+                className="transition-all duration-300"
+              >
                 <Play className="w-4 h-4" />
-              )}
-            </Button>
+              </Button>
+            )}
             <Button
               onClick={() => handleStopStask(task.id)}
-              variant="default"
+              variant={isActive ? "destructive" : "default"}
               size="icon"
-              disabled={loading || totalTime === 0}
+              disabled={loading || totalTime === 0 || !isActive}
               className="transition-all duration-300"
             >
               <TimerOff className="w-4 h-4" />
