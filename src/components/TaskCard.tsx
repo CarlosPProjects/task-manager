@@ -9,10 +9,21 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
-import { MoreVertical, Pause, Play } from "lucide-react";
+import {
+  MoreVertical,
+  Pause,
+  Play,
+  CircleStop,
+  Square,
+  TimerOff,
+} from "lucide-react";
 import { cn, formatTime } from "@/lib/utils";
 import { FC, useEffect, useState } from "react";
-import { deleteTask, updateTaskStatus } from "@/app/actions/task";
+import {
+  deleteTask,
+  updateTaskStatus,
+  updateTaskTotaltime,
+} from "@/app/actions/task";
 import { toast } from "@/hooks/use-toast";
 
 interface Props {
@@ -28,8 +39,7 @@ const TaskCard: FC<Props> = ({ task }) => {
     if (isActive) {
       const interval = setInterval(() => {
         setTotalTime((prev) => prev + 1);
-      });
-
+      }, 1000);
       return () => clearInterval(interval);
     }
   }, [isActive]);
@@ -61,6 +71,25 @@ const TaskCard: FC<Props> = ({ task }) => {
     setIsActive(!isActive);
 
     const { error } = await updateTaskStatus(id, isActive);
+
+    if (error) {
+      toast({
+        title: "Error",
+        variant: "destructive",
+        description: "Error changing task status.",
+      });
+      console.log(error);
+      setLoading(false);
+      return;
+    }
+
+    setLoading(false);
+  };
+
+  const handleStopStask = async (id: number) => {
+    setLoading(true);
+
+    const { error } = await updateTaskTotaltime(id, totalTime);
 
     if (error) {
       toast({
@@ -111,19 +140,30 @@ const TaskCard: FC<Props> = ({ task }) => {
           <span className="text-2xl font-bold text-gray-900">
             {formatTime(totalTime)}
           </span>
-          <Button
-            onClick={() => handleToggleStatus(task.id)}
-            variant={isActive ? "destructive" : "default"}
-            size="icon"
-            disabled={loading}
-            className="transition-all duration-300"
-          >
-            {isActive ? (
-              <Pause className="w-4 h-4" />
-            ) : (
-              <Play className="w-4 h-4" />
-            )}
-          </Button>
+          <div className="flex gap-2 items-center">
+            <Button
+              onClick={() => handleToggleStatus(task.id)}
+              variant={isActive ? "destructive" : "default"}
+              size="icon"
+              disabled={loading}
+              className="transition-all duration-300"
+            >
+              {isActive ? (
+                <Pause className="w-4 h-4" />
+              ) : (
+                <Play className="w-4 h-4" />
+              )}
+            </Button>
+            <Button
+              onClick={() => handleStopStask(task.id)}
+              variant="default"
+              size="icon"
+              disabled={loading || totalTime === 0}
+              className="transition-all duration-300"
+            >
+              <TimerOff className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>
