@@ -2,6 +2,7 @@
 
 import { currentUser } from "@clerk/nextjs/server";
 import { PrismaClient } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 
 const prisma = new PrismaClient();
 
@@ -20,6 +21,8 @@ export const createTask = async (formData: FormData) => {
       },
     });
 
+    revalidatePath("/")
+
     return { success: true, task };
   } catch (error) {
     console.log("Error creating task:", error);
@@ -33,13 +36,15 @@ export const getTasks = async () => {
   if (!user) throw new Error("Usuario no autenticado");
 
   try {
-    const task = await prisma.tasks.findMany({
+    const tasks = await prisma.tasks.findMany({
       where: {
         user_id: user.id,
       }
     })
 
-    return { success: true, task };
+    revalidatePath("/")
+
+    return { success: true, tasks };
   } catch (error) {
     console.log(error);
     return { success: false, error: "Error getting task." };

@@ -1,3 +1,3 @@
-import { tasks } from "@prisma/client"
+import { tasks } from "@prisma/client";
 
 export type TTask = tasks
