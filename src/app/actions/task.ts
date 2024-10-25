@@ -33,7 +33,7 @@ export const createTask = async (formData: FormData) => {
 export const getTasks = async () => {
   const user = await currentUser();
 
-  if (!user) throw new Error("Usuario no autenticado");
+  if (!user) throw new Error("User not authenticated");
 
   try {
     const tasks = await prisma.tasks.findMany({
@@ -54,7 +54,7 @@ export const getTasks = async () => {
 export const deleteTask = async (id: number) => {
   const user = await currentUser();
 
-  if (!user) throw new Error("Usuario no autenticado");
+  if (!user) throw new Error("User not authenticated");
 
   if (!id) throw new Error("Task id is required");
 
@@ -78,7 +78,7 @@ export const deleteTask = async (id: number) => {
 export const updateTaskStatus = async (id: number, isActive: boolean) => {
   const user = await currentUser();
 
-  if (!user) throw new Error("Usuario no autenticado");
+  if (!user) throw new Error("User not authenticated");
 
   if (!id) throw new Error("Task id is required");
 
@@ -105,7 +105,7 @@ export const updateTaskStatus = async (id: number, isActive: boolean) => {
 export const updateTaskTotaltime = async (id: number, totalTime: number) => {
   const user = await currentUser();
 
-  if (!user) throw new Error("Usuario no autenticado");
+  if (!user) throw new Error("User not authenticated");
 
   if (!id) throw new Error("Task id is required");
 

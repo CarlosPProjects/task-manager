@@ -12,11 +12,7 @@ import { Button } from "./ui/button";
 import { MoreVertical, Pause, Play } from "lucide-react";
 import { cn, formatTime } from "@/lib/utils";
 import { FC, useEffect, useState } from "react";
-import {
-  deleteTask,
-  updateTaskStatus,
-  updateTaskTotaltime,
-} from "@/app/actions/task";
+import { deleteTask, updateTaskStatus } from "@/app/actions/task";
 import { toast } from "@/hooks/use-toast";
 
 interface Props {
@@ -25,19 +21,17 @@ interface Props {
 
 const TaskCard: FC<Props> = ({ task }) => {
   const [loading, setLoading] = useState(false);
-  const [totalTime, setTotalTime] = useState(task.totaltime);
-  const [isActive, setIsActive] = useState(task.isactive);
+  const [totalTime, setTotalTime] = useState(0);
+  const [isActive, setIsActive] = useState(false);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-
     if (isActive) {
-      setInterval(() => {
+      const interval = setInterval(() => {
         setTotalTime((prev) => prev + 1);
-      }, 1000);
-    }
+      });
 
-    return () => clearInterval(interval);
+      return () => clearInterval(interval);
+    }
   }, [isActive]);
 
   const handleDeleteTask = async (id: number) => {
@@ -62,8 +56,9 @@ const TaskCard: FC<Props> = ({ task }) => {
     setLoading(false);
   };
 
-  const handleToggleStatus = async (id: number, isActive: boolean) => {
+  const handleToggleStatus = async (id: number) => {
     setLoading(true);
+    setIsActive(!isActive);
 
     const { error } = await updateTaskStatus(id, isActive);
 
@@ -117,7 +112,7 @@ const TaskCard: FC<Props> = ({ task }) => {
             {formatTime(totalTime)}
           </span>
           <Button
-            onClick={() => handleToggleStatus(task.id, isActive)}
+            onClick={() => handleToggleStatus(task.id)}
             variant={isActive ? "destructive" : "default"}
             size="icon"
             disabled={loading}
