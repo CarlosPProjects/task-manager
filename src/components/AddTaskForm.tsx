@@ -43,6 +43,7 @@ const CreateTaskForm = () => {
           <form className="flex" onSubmit={handleSubmit}>
             <Input
               type="text"
+              name="task"
               placeholder="Enter task name"
               onChange={() => console.log()}
               className="flex-grow mr-2"

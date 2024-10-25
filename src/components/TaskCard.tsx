@@ -2,7 +2,6 @@
 
 import { TTask } from "@/utils/types/task";
 import { Card, CardContent } from "@/components/ui/card";
-import { type FC } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,12 +11,17 @@ import {
 import { Button } from "./ui/button";
 import { MoreVertical, Pause, Play } from "lucide-react";
 import { formatTime } from "@/lib/utils";
+import { FC } from "react";
 
 interface Props {
   task: TTask;
 }
 
 const TaskCard: FC<Props> = ({ task }) => {
+  const handleDeleteTask = async (id: number) => {
+    console.log(id);
+  };
+
   return (
     <Card className="transition-all duration-300 hover:shadow-lg">
       <CardContent className="p-4">
@@ -35,7 +39,7 @@ const TaskCard: FC<Props> = ({ task }) => {
               <DropdownMenuItem onClick={() => console.log("")}>
                 Reset
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => console.log("")}>
+              <DropdownMenuItem onClick={() => handleDeleteTask(task.id)}>
                 Delete
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => console.log("")}>

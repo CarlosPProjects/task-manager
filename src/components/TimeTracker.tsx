@@ -11,7 +11,7 @@ const TimeTracker = () => {
       </CardHeader>
       <CardContent>
         <div className="flex items-center justify-center">
-          <Clock className="w-6 h-6 mr-2 text-blue-500" />
+          <Clock className="w-6 h-6 mr-2" />
           <span className="text-3xl font-bold text-gray-900">
             {formatTime(0)}
           </span>
