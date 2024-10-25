@@ -10,20 +10,47 @@ import {
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
 import { MoreVertical, Pause, Play } from "lucide-react";
-import { formatTime } from "@/lib/utils";
-import { FC } from "react";
+import { cn, formatTime } from "@/lib/utils";
+import { FC, useState } from "react";
+import { deleteTask } from "@/app/actions/task";
+import { toast } from "@/hooks/use-toast";
 
 interface Props {
   task: TTask;
 }
 
 const TaskCard: FC<Props> = ({ task }) => {
+  const [loading, setLoading] = useState(false);
+
   const handleDeleteTask = async (id: number) => {
-    console.log(id);
+    setLoading(true);
+
+    const { error } = await deleteTask(id);
+
+    if (error) {
+      toast({
+        title: "Error",
+        variant: "destructive",
+        description: "Error deleting task.",
+      });
+      return;
+    }
+
+    toast({
+      title: "Success",
+      description: "Task deleted successfully",
+    });
+
+    setLoading(false);
   };
 
   return (
-    <Card className="transition-all duration-300 hover:shadow-lg">
+    <Card
+      className={cn(
+        "transition-all duration-300 hover:shadow-lg",
+        loading && "opacity-50 cursor-not-allowed"
+      )}
+    >
       <CardContent className="p-4">
         <div className="flex justify-between items-start mb-4">
           <h3 className="text-lg font-semibold text-gray-800 truncate">
@@ -31,7 +58,7 @@ const TaskCard: FC<Props> = ({ task }) => {
           </h3>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" disabled={loading}>
                 <MoreVertical className="w-4 h-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -56,6 +83,7 @@ const TaskCard: FC<Props> = ({ task }) => {
             onClick={() => console.log()}
             variant={task.isactive ? "destructive" : "default"}
             size="icon"
+            disabled={loading}
             className="transition-all duration-300"
           >
             {task.isactive ? (

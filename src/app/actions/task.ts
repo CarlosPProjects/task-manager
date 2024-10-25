@@ -10,8 +10,8 @@ export const createTask = async (formData: FormData) => {
   const user = await currentUser();
   if (!user) throw new Error("User not authenticated");
 
-  const name = formData.get("task") as string || null;
-  if(!name) throw new Error("Task name is required");
+  const name = (formData.get("task") as string) || null;
+  if (!name) throw new Error("Task name is required");
 
   try {
     const task = await prisma.tasks.create({
@@ -21,7 +21,7 @@ export const createTask = async (formData: FormData) => {
       },
     });
 
-    revalidatePath("/")
+    revalidatePath("/");
 
     return { success: true, task };
   } catch (error) {
@@ -39,14 +39,38 @@ export const getTasks = async () => {
     const tasks = await prisma.tasks.findMany({
       where: {
         user_id: user.id,
-      }
-    })
+      },
+    });
 
-    revalidatePath("/")
+    revalidatePath("/");
 
     return { success: true, tasks };
   } catch (error) {
     console.log(error);
     return { success: false, error: "Error getting task." };
+  }
+};
+
+export const deleteTask = async (id: number) => {
+  const user = await currentUser();
+
+  if (!user) throw new Error("Usuario no autenticado");
+
+  if (!id) throw new Error("Task id is required");
+
+  try {
+    const task = await prisma.tasks.delete({
+      where: {
+        id,
+        user_id: user.id,
+      },
+    });
+
+    revalidatePath("/");
+
+    return { success: true, task };
+  } catch (error) {
+    console.log(error);
+    return { success: false, error: "Error deleting task." };
   }
 };

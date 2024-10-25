@@ -9,7 +9,7 @@ import { Button } from "./ui/button";
 import { Plus } from "lucide-react";
 import TimeTracker from "./TimeTracker";
 
-const CreateTaskForm = () => {
+const TaskHeader = () => {
   const { toast } = useToast();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -60,4 +60,4 @@ const CreateTaskForm = () => {
   );
 };
 
-export default CreateTaskForm;
+export default TaskHeader;
