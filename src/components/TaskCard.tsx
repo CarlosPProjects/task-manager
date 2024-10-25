@@ -11,8 +11,12 @@ import {
 import { Button } from "./ui/button";
 import { MoreVertical, Pause, Play } from "lucide-react";
 import { cn, formatTime } from "@/lib/utils";
-import { FC, useState } from "react";
-import { deleteTask } from "@/app/actions/task";
+import { FC, useEffect, useState } from "react";
+import {
+  deleteTask,
+  updateTaskStatus,
+  updateTaskTotaltime,
+} from "@/app/actions/task";
 import { toast } from "@/hooks/use-toast";
 
 interface Props {
@@ -21,6 +25,17 @@ interface Props {
 
 const TaskCard: FC<Props> = ({ task }) => {
   const [loading, setLoading] = useState(false);
+  const [totalTime, setTotalTime] = useState(task.totaltime);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (task.isactive) {
+      interval = setInterval(() => {
+        setTotalTime((prev) => prev + 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [task.isactive]);
 
   const handleDeleteTask = async (id: number) => {
     setLoading(true);
@@ -40,6 +55,39 @@ const TaskCard: FC<Props> = ({ task }) => {
       title: "Success",
       description: "Task deleted successfully",
     });
+
+    setLoading(false);
+  };
+
+  const handleToggleStatus = async (id: number, isActive: boolean) => {
+    setLoading(true);
+
+    if (!isActive) {
+      const { error } = await updateTaskTotaltime(task.id, totalTime);
+      if (error) {
+        console.log(error);
+        toast({
+          title: "Error",
+          variant: "destructive",
+          description: "Error updating total time.",
+        });
+        setLoading(false);
+        return;
+      }
+    }
+
+    const { error } = await updateTaskStatus(id, isActive);
+
+    if (error) {
+      toast({
+        title: "Error",
+        variant: "destructive",
+        description: "Error changing task status.",
+      });
+      console.log(error);
+      setLoading(false);
+      return;
+    }
 
     setLoading(false);
   };
@@ -77,10 +125,10 @@ const TaskCard: FC<Props> = ({ task }) => {
         </div>
         <div className="flex justify-between items-center">
           <span className="text-2xl font-bold text-gray-900">
-            {formatTime(task.totaltime)}
+            {formatTime(totalTime)}
           </span>
           <Button
-            onClick={() => console.log()}
+            onClick={() => handleToggleStatus(task.id, task.isactive)}
             variant={task.isactive ? "destructive" : "default"}
             size="icon"
             disabled={loading}

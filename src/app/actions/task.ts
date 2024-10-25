@@ -59,7 +59,7 @@ export const deleteTask = async (id: number) => {
   if (!id) throw new Error("Task id is required");
 
   try {
-    const task = await prisma.tasks.delete({
+    await prisma.tasks.delete({
       where: {
         id,
         user_id: user.id,
@@ -68,9 +68,63 @@ export const deleteTask = async (id: number) => {
 
     revalidatePath("/");
 
-    return { success: true, task };
+    return { success: true };
   } catch (error) {
     console.log(error);
     return { success: false, error: "Error deleting task." };
+  }
+};
+
+export const updateTaskStatus = async (id: number, isActive: boolean) => {
+  const user = await currentUser();
+
+  if (!user) throw new Error("Usuario no autenticado");
+
+  if (!id) throw new Error("Task id is required");
+
+  try {
+    await prisma.tasks.update({
+      where: {
+        id,
+        user_id: user.id,
+      },
+      data: {
+        isactive: !isActive,
+      },
+    });
+
+    revalidatePath("/");
+
+    return { success: true };
+  } catch (error) {
+    console.log(error);
+    return { success: false, error: "Error updating task status." };
+  }
+};
+
+export const updateTaskTotaltime = async (id: number, totalTime: number) => {
+  const user = await currentUser();
+
+  if (!user) throw new Error("Usuario no autenticado");
+
+  if (!id) throw new Error("Task id is required");
+
+  try {
+    await prisma.tasks.update({
+      where: {
+        id,
+        user_id: user.id,
+      },
+      data: {
+        totaltime: totalTime,
+      },
+    });
+
+    revalidatePath("/");
+
+    return { success: true };
+  } catch (error) {
+    console.log(error);
+    return { success: false, error: "Error updating task time." };
   }
 };
