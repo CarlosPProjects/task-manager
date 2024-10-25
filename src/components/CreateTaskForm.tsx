@@ -1,20 +1,31 @@
 "use client";
 
 import { createTask } from "@/app/actions/task";
+import { useToast } from "@/hooks/use-toast";
 import React from "react";
 
 const CreateTaskForm = () => {
+  const { toast } = useToast();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData);
 
-    const { error } = await createTask(data.task.toString());
+    const { error } = await createTask(formData);
 
     if (error) {
-      console.log(error);
-      throw new Error(error);
+      toast({
+        title: "Error",
+        variant: "destructive",
+        description: "Error creating task.",
+      });
+
+      return;
     }
+
+    toast({
+      title: "Success",
+      description: "Task created successfully",
+    });
   };
 
   return (

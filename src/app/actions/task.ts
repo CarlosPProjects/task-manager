@@ -5,9 +5,12 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export const createTask = async (name: string) => {
+export const createTask = async (formData: FormData) => {
   const user = await currentUser();
-  if (!user) throw new Error("Usuario no autenticado");
+  if (!user) throw new Error("User not authenticated");
+
+  const name = formData.get("task") as string || null;
+  if(!name) throw new Error("Task name is required");
 
   try {
     const task = await prisma.tasks.create({
