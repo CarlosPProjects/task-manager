@@ -9,14 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
-import {
-  MoreVertical,
-  Pause,
-  Play,
-  CircleStop,
-  Square,
-  TimerOff,
-} from "lucide-react";
+import { MoreVertical, Play, TimerOff } from "lucide-react";
 import { cn, formatTime } from "@/lib/utils";
 import { FC, useEffect, useState } from "react";
 import {
@@ -39,10 +32,11 @@ const TaskCard: FC<Props> = ({ task }) => {
     if (isActive) {
       const interval = setInterval(() => {
         setTotalTime((prev) => prev + 1);
+        window.localStorage.setItem("totalTime", totalTime.toString());
       }, 1000);
       return () => clearInterval(interval);
     }
-  }, [isActive]);
+  }, [isActive, totalTime]);
 
   const handleDeleteTask = async (id: number) => {
     setLoading(true);
@@ -66,11 +60,22 @@ const TaskCard: FC<Props> = ({ task }) => {
     setLoading(false);
   };
 
-  const handleToggleStatus = async (id: number) => {
-    setLoading(true);
-    setIsActive(!isActive);
+  const toggleStatusTask = async (id: number) => {
+    const newStatus = !isActive;
 
-    const { error } = await updateTaskStatus(id, isActive);
+    setIsActive(newStatus);
+
+    if (newStatus) {
+      await playTask(id);
+    } else {
+      await stopTask(id);
+    }
+  };
+
+  const playTask = async (id: number) => {
+    setLoading(true);
+
+    const { error } = await updateTaskStatus(id, true);
 
     if (error) {
       toast({
@@ -79,16 +84,14 @@ const TaskCard: FC<Props> = ({ task }) => {
         description: "Error changing task status.",
       });
       console.log(error);
-      setLoading(false);
-      return;
     }
 
     setLoading(false);
   };
 
-  const handleStopStask = async (id: number) => {
+  const stopTask = async (id: number) => {
     setLoading(true);
-    setIsActive(false);
+
     const { error } = await updateTaskTotaltime(id, totalTime);
 
     if (error) {
@@ -98,8 +101,6 @@ const TaskCard: FC<Props> = ({ task }) => {
         description: "Error changing task status.",
       });
       console.log(error);
-      setLoading(false);
-      return;
     }
 
     setLoading(false);
@@ -143,7 +144,7 @@ const TaskCard: FC<Props> = ({ task }) => {
           <div className="flex gap-2 items-center">
             {!isActive && (
               <Button
-                onClick={() => handleToggleStatus(task.id)}
+                onClick={() => toggleStatusTask(task.id)}
                 variant={"default"}
                 size="icon"
                 disabled={loading}
@@ -153,7 +154,7 @@ const TaskCard: FC<Props> = ({ task }) => {
               </Button>
             )}
             <Button
-              onClick={() => handleStopStask(task.id)}
+              onClick={() => toggleStatusTask(task.id)}
               variant={isActive ? "destructive" : "default"}
               size="icon"
               disabled={loading || totalTime === 0 || !isActive}
