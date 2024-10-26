@@ -18,6 +18,7 @@ import {
   updateTaskTotaltime,
 } from "@/app/actions/task";
 import { toast } from "@/hooks/use-toast";
+import TaskName from "./TaskName";
 
 interface Props {
   task: TTask;
@@ -27,6 +28,7 @@ const TaskCard: FC<Props> = ({ task }) => {
   const [loading, setLoading] = useState(false);
   const [totalTime, setTotalTime] = useState(task.totaltime);
   const [isActive, setIsActive] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     if (isActive) {
@@ -49,7 +51,7 @@ const TaskCard: FC<Props> = ({ task }) => {
     }
 
     toast({
-      title: "Success",
+      title: "Deleted",
       description: "Task deleted successfully",
     });
 
@@ -90,23 +92,22 @@ const TaskCard: FC<Props> = ({ task }) => {
     >
       <CardContent className="p-4">
         <div className="flex justify-between items-start mb-4">
-          <h3 className="text-lg font-semibold text-gray-800 truncate">
-            {task.name}
-          </h3>
+          <TaskName
+            task={task}
+            isUpdating={isUpdating}
+            setIsUpdating={setIsUpdating}
+          />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" disabled={loading}>
-                <MoreVertical className="w-4 h-4" />
+                <MoreVertical className="size-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => console.log("")}>
-                Reset
-              </DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleDeleteTask()}>
                 Delete
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => console.log("")}>
+              <DropdownMenuItem onClick={() => setIsUpdating(true)}>
                 Update
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -125,9 +126,9 @@ const TaskCard: FC<Props> = ({ task }) => {
               className="transition-all duration-300"
             >
               {isActive ? (
-                <TimerOff className="w-4 h-4" />
+                <TimerOff className="size-4" />
               ) : (
-                <Play className="w-4 h-4" />
+                <Play className="size-4" />
               )}
             </Button>
           </div>

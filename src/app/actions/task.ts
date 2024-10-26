@@ -129,3 +129,30 @@ export const updateTaskTotaltime = async (id: number, totalTime: number) => {
     return { success: false, error: "Error updating task time." };
   }
 };
+
+export const updateTaskName = async (id: number, name: string) => {
+  const user = await currentUser();
+
+  if (!user) throw new Error("User not authenticated");
+
+  if (!id) throw new Error("Task id is required");
+
+  try {
+    await prisma.tasks.update({
+      where: {
+        id,
+        user_id: user.id,
+      },
+      data: {
+        name,
+      },
+    });
+
+    revalidatePath("/");
+
+    return { success: true };
+  } catch (error) {
+    console.log(error);
+    return { success: false, error: "Error updating task time." };
+  }
+};

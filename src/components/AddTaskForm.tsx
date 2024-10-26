@@ -10,6 +10,7 @@ import { Plus } from "lucide-react";
 
 const AddTaskForm = () => {
   const { toast } = useToast();
+  const formRef = React.useRef<HTMLFormElement>(null);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -27,9 +28,11 @@ const AddTaskForm = () => {
     }
 
     toast({
-      title: "Success",
+      title: "Created",
       description: "Task created successfully",
     });
+
+    formRef.current?.reset();
   };
 
   return (
@@ -38,16 +41,15 @@ const AddTaskForm = () => {
         <CardTitle>Add New Task</CardTitle>
       </CardHeader>
       <CardContent>
-        <form className="flex" onSubmit={handleSubmit}>
+        <form ref={formRef} className="flex" onSubmit={handleSubmit}>
           <Input
             type="text"
             name="task"
             placeholder="Enter task name"
-            onChange={() => console.log()}
             className="flex-grow mr-2"
             required
           />
-          <Button onClick={() => console.log()}>
+          <Button type="submit">
             <Plus className="w-4 h-4 mr-2" />
             Add Task
           </Button>
