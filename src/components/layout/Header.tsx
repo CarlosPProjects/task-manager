@@ -2,7 +2,7 @@
 
 import { LayoutList, LogOut, Settings } from "lucide-react";
 import { Button } from "../ui/button";
-import { SignInButton, SignOutButton } from "@clerk/nextjs";
+import { SignOutButton } from "@clerk/nextjs";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useUser } from "@clerk/nextjs";
 import { cn, getUserInitials } from "@/lib/utils";
