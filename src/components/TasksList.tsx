@@ -1,9 +1,11 @@
-import { getTasks } from "@/app/actions/task";
+import { TTask } from "@/utils/types/task";
 import TaskCard from "./TaskCard";
+import { FC } from "react";
 
-const TasksList = async () => {
-  const { tasks } = await getTasks();
-
+interface Props {
+  tasks: TTask[];
+}
+const TasksList: FC<Props> = async ({ tasks }) => {
   return (
     <>
       {tasks && tasks.length > 0 ? (
