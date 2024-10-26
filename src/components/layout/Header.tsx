@@ -50,6 +50,7 @@ const Header = () => {
               variant="ghost"
               size="icon"
               className="text-gray-500 hover:text-gray-700"
+              onClick={() => router.push("/user-profile")}
             >
               <Settings className="h-5 w-5" />
               <span className="sr-only">Settings</span>
