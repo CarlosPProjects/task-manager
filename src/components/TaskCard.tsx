@@ -10,7 +10,7 @@ import {
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
 import { MoreVertical, Play, TimerOff } from "lucide-react";
-import { cn, formatTime } from "@/lib/utils";
+import { cn, formatTime, showErrorToast } from "@/lib/utils";
 import { FC, useEffect, useState } from "react";
 import {
   deleteTask,
@@ -44,11 +44,7 @@ const TaskCard: FC<Props> = ({ task }) => {
     const { error } = await deleteTask(task.id);
 
     if (error) {
-      toast({
-        title: "Error",
-        variant: "destructive",
-        description: "Error deleting task.",
-      });
+      showErrorToast("Error deleting task.");
       return;
     }
 
@@ -61,15 +57,30 @@ const TaskCard: FC<Props> = ({ task }) => {
   };
 
   const toggleStatusTask = async () => {
+    setLoading(true);
     const newStatus = !isActive;
-
     setIsActive(newStatus);
 
-    if (newStatus) {
-      await playTask();
-    } else {
-      await stopTask();
+    // Cambia el estado de la tarea
+    const { error: statusError } = await updateTaskStatus(task.id, newStatus);
+    if (statusError) {
+      showErrorToast("Error changing task status.");
+      setLoading(false);
+      return;
     }
+
+    // Si la tarea se detiene, actualiza el tiempo total
+    if (!newStatus) {
+      const { error: timeError } = await updateTaskTotaltime(
+        task.id,
+        totalTime
+      );
+      if (timeError) {
+        showErrorToast("Error updating task total time.");
+      }
+    }
+
+    setLoading(false);
   };
 
   const playTask = async () => {
@@ -78,11 +89,7 @@ const TaskCard: FC<Props> = ({ task }) => {
     const { error } = await updateTaskStatus(task.id, true);
 
     if (error) {
-      toast({
-        title: "Error",
-        variant: "destructive",
-        description: "Error changing task status.",
-      });
+      showErrorToast("Error changing task status.");
       console.log(error);
     }
 
@@ -95,22 +102,14 @@ const TaskCard: FC<Props> = ({ task }) => {
     const { error } = await updateTaskTotaltime(task.id, totalTime);
 
     if (error) {
-      toast({
-        title: "Error",
-        variant: "destructive",
-        description: "Error changing task status.",
-      });
+      showErrorToast("Error updating task time.");
       console.log(error);
     }
 
     const status = await updateTaskStatus(task.id, false);
 
     if (status.error) {
-      toast({
-        title: "Error",
-        variant: "destructive",
-        description: "Error changing task status.",
-      });
+      showErrorToast("Error changing task status.");
       console.log(status.error);
     }
 
