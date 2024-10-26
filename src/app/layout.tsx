@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "@/styles/globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "@/components/ui/toaster";
+import Header from "@/components/layout/Header";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -20,7 +21,10 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={`${inter.className} antialiased`}>
-          {children}
+          <div className="min-h-screen bg-gray-50">
+            <Header />
+            {children}
+          </div>
           <Toaster />
         </body>
       </html>

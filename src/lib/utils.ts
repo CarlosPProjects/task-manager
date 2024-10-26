@@ -22,3 +22,8 @@ export const showErrorToast = (description: string) => {
     description,
   });
 };
+
+export const getUserInitials = (name: string) => {
+  const [firstName, lastName] = name.split(" ");
+  return firstName.charAt(0) + (lastName ? lastName.charAt(0) : "");
+};
