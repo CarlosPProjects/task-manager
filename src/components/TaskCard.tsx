@@ -61,7 +61,6 @@ const TaskCard: FC<Props> = ({ task }) => {
     const newStatus = !isActive;
     setIsActive(newStatus);
 
-    // Cambia el estado de la tarea
     const { error: statusError } = await updateTaskStatus(task.id, newStatus);
     if (statusError) {
       showErrorToast("Error changing task status.");
@@ -69,7 +68,6 @@ const TaskCard: FC<Props> = ({ task }) => {
       return;
     }
 
-    // Si la tarea se detiene, actualiza el tiempo total
     if (!newStatus) {
       const { error: timeError } = await updateTaskTotaltime(
         task.id,
@@ -78,39 +76,6 @@ const TaskCard: FC<Props> = ({ task }) => {
       if (timeError) {
         showErrorToast("Error updating task total time.");
       }
-    }
-
-    setLoading(false);
-  };
-
-  const playTask = async () => {
-    setLoading(true);
-
-    const { error } = await updateTaskStatus(task.id, true);
-
-    if (error) {
-      showErrorToast("Error changing task status.");
-      console.log(error);
-    }
-
-    setLoading(false);
-  };
-
-  const stopTask = async () => {
-    setLoading(true);
-
-    const { error } = await updateTaskTotaltime(task.id, totalTime);
-
-    if (error) {
-      showErrorToast("Error updating task time.");
-      console.log(error);
-    }
-
-    const status = await updateTaskStatus(task.id, false);
-
-    if (status.error) {
-      showErrorToast("Error changing task status.");
-      console.log(status.error);
     }
 
     setLoading(false);
