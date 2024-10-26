@@ -16,7 +16,7 @@ model tasks {
   name       String
   totaltime  Int      @default(0)
   isactive   Boolean  @default(false)
-  user_id    String   @default(dbgenerated("requesting_user_id()"))
+  user_id    String
   created_at DateTime @default(now()) @db.Timestamp(6)
 
   @@schema("public")
