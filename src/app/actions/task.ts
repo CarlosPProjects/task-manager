@@ -92,7 +92,7 @@ export const updateTaskStatus = async (id: number, isActive: boolean) => {
         user_id: user.id,
       },
       data: {
-        isactive: !isActive,
+        isactive: isActive,
       },
     });
 

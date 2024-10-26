@@ -38,10 +38,10 @@ const TaskCard: FC<Props> = ({ task }) => {
     }
   }, [isActive, totalTime]);
 
-  const handleDeleteTask = async (id: number) => {
+  const handleDeleteTask = async () => {
     setLoading(true);
 
-    const { error } = await deleteTask(id);
+    const { error } = await deleteTask(task.id);
 
     if (error) {
       toast({
@@ -60,22 +60,22 @@ const TaskCard: FC<Props> = ({ task }) => {
     setLoading(false);
   };
 
-  const toggleStatusTask = async (id: number) => {
+  const toggleStatusTask = async () => {
     const newStatus = !isActive;
 
     setIsActive(newStatus);
 
     if (newStatus) {
-      await playTask(id);
+      await playTask();
     } else {
-      await stopTask(id);
+      await stopTask();
     }
   };
 
-  const playTask = async (id: number) => {
+  const playTask = async () => {
     setLoading(true);
 
-    const { error } = await updateTaskStatus(id, true);
+    const { error } = await updateTaskStatus(task.id, true);
 
     if (error) {
       toast({
@@ -89,10 +89,10 @@ const TaskCard: FC<Props> = ({ task }) => {
     setLoading(false);
   };
 
-  const stopTask = async (id: number) => {
+  const stopTask = async () => {
     setLoading(true);
 
-    const { error } = await updateTaskTotaltime(id, totalTime);
+    const { error } = await updateTaskTotaltime(task.id, totalTime);
 
     if (error) {
       toast({
@@ -101,6 +101,17 @@ const TaskCard: FC<Props> = ({ task }) => {
         description: "Error changing task status.",
       });
       console.log(error);
+    }
+
+    const status = await updateTaskStatus(task.id, false);
+
+    if (status.error) {
+      toast({
+        title: "Error",
+        variant: "destructive",
+        description: "Error changing task status.",
+      });
+      console.log(status.error);
     }
 
     setLoading(false);
@@ -128,7 +139,7 @@ const TaskCard: FC<Props> = ({ task }) => {
               <DropdownMenuItem onClick={() => console.log("")}>
                 Reset
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleDeleteTask(task.id)}>
+              <DropdownMenuItem onClick={() => handleDeleteTask()}>
                 Delete
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => console.log("")}>
@@ -142,25 +153,18 @@ const TaskCard: FC<Props> = ({ task }) => {
             {formatTime(totalTime)}
           </span>
           <div className="flex gap-2 items-center">
-            {!isActive && (
-              <Button
-                onClick={() => toggleStatusTask(task.id)}
-                variant={"default"}
-                size="icon"
-                disabled={loading}
-                className="transition-all duration-300"
-              >
-                <Play className="w-4 h-4" />
-              </Button>
-            )}
             <Button
-              onClick={() => toggleStatusTask(task.id)}
+              onClick={() => toggleStatusTask()}
               variant={isActive ? "destructive" : "default"}
               size="icon"
-              disabled={loading || totalTime === 0 || !isActive}
+              disabled={loading}
               className="transition-all duration-300"
             >
-              <TimerOff className="w-4 h-4" />
+              {isActive ? (
+                <TimerOff className="w-4 h-4" />
+              ) : (
+                <Play className="w-4 h-4" />
+              )}
             </Button>
           </div>
         </div>

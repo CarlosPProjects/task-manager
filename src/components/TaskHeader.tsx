@@ -47,6 +47,7 @@ const TaskHeader = () => {
               placeholder="Enter task name"
               onChange={() => console.log()}
               className="flex-grow mr-2"
+              required
             />
             <Button onClick={() => console.log()}>
               <Plus className="w-4 h-4 mr-2" />
