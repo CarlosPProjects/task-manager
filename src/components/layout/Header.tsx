@@ -35,9 +35,9 @@ const Header = () => {
                 <h2 className="text-lg font-semibold text-gray-900">
                   {user.fullName}
                 </h2>
-                <p className="text-sm text-gray-500">
+                {/* <p className="text-sm text-gray-500">
                   {user.primaryEmailAddress?.emailAddress}
-                </p>
+                </p> */}
               </div>
             </div>
 
